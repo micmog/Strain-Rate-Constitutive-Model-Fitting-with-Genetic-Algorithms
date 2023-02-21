@@ -1,6 +1,3 @@
-//=================================================================================================
-//                    Copyright (C) 2017 Olivier Mallet - All Rights Reserved
-//=================================================================================================
 
 #include "./src/Galgo.hpp"
 
@@ -16,22 +13,7 @@ class MyObjective
 
 //private:
 public:
-/*
-   static void read(){
-  std::string line;
-  std::ifstream myfile ("Data.dat");
-  if (myfile.is_open())
-  {
-    while ( getline (myfile,line) )
-    {
-      std::cout << line << '\n';
-    }
-    myfile.close();
-  }
 
-  else std::cout << "Unable to open file";
-    }
-*/
    static std::vector<T> Objective(const std::vector<T>& x)
    {
 
@@ -82,7 +64,7 @@ obj+=sqrt(pow(Result_data[i]-stress_data[i],2.0));
 }
 //std::cout<<obj<<std::endl;
 
-//Minimise difference so needs to be -ve I think
+//Minimise difference so needs to be -ve
 
      // T obj = (pow(x[0],2)-(x[0]*x[1]) +x[2]);
       return {-obj};
