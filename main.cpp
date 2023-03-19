@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <string>
+#include <sstream>
 
 // objective class example
 template <typename T>
@@ -60,14 +61,14 @@ Result_data.push_back(result_at_strain);
 
 //std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
 
-obj+=sqrt(pow(Result_data[i]-stress_data[i],2.0));
+obj+=pow(Result_data[i]-stress_data[i],2.0);
 }
 //std::cout<<obj<<std::endl;
 
 //Minimise difference so needs to be -ve
 
      // T obj = (pow(x[0],2)-(x[0]*x[1]) +x[2]);
-      return {-obj};
+      return {-sqrt(obj/strain_data.size())};
 
    }
    // NB: GALGO maximize by default so we will maximize -f(x,y)
@@ -99,6 +100,47 @@ int main()
    //FOR DEBUGGING
 */
 
+
+
+
+
+/* // starting reading in values
+
+
+    std::string line;               // A line of key/values from text
+    std::string key;                // Temporary for our key
+    std::string value;              // Temporary for our value
+    std::string path = "Var.txt";
+    std::ifstream stream(path);     // Load the file stream
+    std::stringstream splitter;     // Prepare a stringstream as a splitter (splits on spaces) for reading key/values from a line
+
+    // Make sure we can read the stream
+    if (stream) {
+        // As long as there are lines of data, we read the file
+        while (std::getline(stream, line)) {
+            splitter << line;                                   // Load line into splitter
+            splitter >> key;                                    // Read the key back into temporary
+            splitter >> value;                                  // Read the value back into temporary
+            splitter.clear();                                   // Clear for next line
+          //  variables[key] = value;                             // Store the key/value pair in our variable map.
+            std::cout<<"key: "<<key<<", value: "<<value<<std::endl;
+        }
+    }
+    else {
+        // The file was not found or locked, etc...
+        std::cout << "Unable to open file: " << path << std::endl;
+    }
+
+*/
+
+
+
+
+
+
+
+
+
    galgo::Parameter<double> A({0,1.0,0.3});//par1({0.0,1.0,1});//last parameter is initial guess
    galgo::Parameter<double> B({0.0,1.0,0.5});
    galgo::Parameter<double> n({0.0,1.0,0.4});
@@ -118,10 +160,74 @@ int main()
   //ga.covrate=0.5;
   //ga.precision=25;
   //ga.Selection=SUS;
+  
+  
 
    // running genetic algorithm
    ga.run();
 
+
+
+   //read();
+std::vector<double> strain_data;
+std::vector<double> stress_data;
+std::vector<double> stress_predicted;
+
+  //std::string line;
+  std::ifstream myfile ("Data.dat");
+  if (myfile.is_open())
+  {
+    double pl_strain,stress;
+    while (myfile >> pl_strain >> stress/* getline (myfile,line) */)
+    {
+       //std::cout << pl_strain<<std::endl;
+      //std::cout << line << '\n';
+      strain_data.push_back(pl_strain);
+      stress_data.push_back(stress);
+
+    }
+    myfile.close();
+  }
+  else std::cout << "Unable to open file";
+
+
+   std::vector<double> JC_fitted = ga.result()->getParam();
+   //<<std::endl;
+
+
+    double eps_star = 1000.0;//normalised strain rate
+    double T_star = 0.53988;
+
+
+
+   for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
+{
+
+ stress_predicted.push_back((JC_fitted[0]+(JC_fitted[1]*pow(strain_data[i],JC_fitted[2])))*(1.0+(JC_fitted[3]*std::log(eps_star)))*(1.0-pow(T_star,JC_fitted[4]))) ;
+
+}
+
+//std::cout<<strain_data.size()<<std::endl;
+//std::cout<<stress_data.size()<<std::endl;
+//std::cout<<stress_predicted.size()<<std::endl;
+
+  std::ofstream Output_Results;
+  Output_Results.open ("Results.txt");
+  //Output_Results << "Writing this to a file.\n";
+  
+
+
+Output_Results<<"strain_data[i]"<<"\t"<<"stress_data[i]"<<"\t"<<"stress_predicted[i]"<<std::endl;
+for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
+{
+Output_Results<<strain_data[i]<<"\t"<<stress_data[i]<<"\t"<<stress_predicted[i]<<std::endl;
+std::cout<<strain_data[i]<<"\t"<<stress_data[i]<<"\t"<<stress_predicted[i]<<std::endl;
+}
+
+Output_Results.close();
+ //  std::cout<<ytr[0]<<std::endl;
+
+ //  std::cout<<ytr.size()<<std::endl;
 
 //std::cout<<ga.result()<<std::endl;
 
