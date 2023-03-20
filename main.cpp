@@ -136,26 +136,28 @@ int main()
 
 
 
-   galgo::Parameter<double> A({1010,1030.0,1020.0});//par1({0.0,1.0,1});//last parameter is initial guess
-   galgo::Parameter<double> B({1520.0,1540.0,1530.0});
-   galgo::Parameter<double> n({0.3,0.5,0.4});
-   galgo::Parameter<double> C({0.014,0.016,0.015});
-   galgo::Parameter<double> m({0.31999,0.32000001,0.32});
+   galgo::Parameter<double> A({0.0,5000.0,1020.0});//par1({0.0,1.0,1});//last parameter is initial guess
+   galgo::Parameter<double> B({0.0,5000.0,1530.0});
+   galgo::Parameter<double> n({0.0,1.0,0.4});
+   galgo::Parameter<double> C({0.0,0.1,0.015});
+   galgo::Parameter<double> m({0.319999,0.32000001,0.32});
 
    // here both parameter will be encoded using 16 bits the default value inside the template declaration
    // this value can be modified but has to remain between 1 and 64
 
    // initiliazing genetic algorithm
-   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,1000,500,true,A,B,n,C,m);
+   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,50,50000,true,A,B,n,C,m);
 
    // setting constraints
   // ga.Constraint = MyConstraint;
 
-  //ga.mutrate=0.9;
-  //ga.covrate=0.5;
+  //ga.mutrate=0.01;
+  ga.covrate=0.5;
   //ga.precision=25;
-  //ga.Selection=SUS;
+  //ga.Selection=RSP;
+   // ga.Selection=TNT;
     //ga.genstep=1;
+    ga.CrossOver=UXO;
 
 
    // running genetic algorithm
