@@ -136,26 +136,26 @@ int main()
 
 
 
-   galgo::Parameter<double> A({0,1.0,0.3});//par1({0.0,1.0,1});//last parameter is initial guess
-   galgo::Parameter<double> B({0.0,1.0,0.5});
-   galgo::Parameter<double> n({0.0,1.0,0.4});
-   galgo::Parameter<double> C({0.0,0.01,0.008});
-   galgo::Parameter<double> m({0.0,2.0,1.3});
+   galgo::Parameter<double> A({1010,1030.0,1020.0});//par1({0.0,1.0,1});//last parameter is initial guess
+   galgo::Parameter<double> B({1520.0,1540.0,1530.0});
+   galgo::Parameter<double> n({0.3,0.5,0.4});
+   galgo::Parameter<double> C({0.014,0.016,0.015});
+   galgo::Parameter<double> m({0.31999,0.32000001,0.32});
 
    // here both parameter will be encoded using 16 bits the default value inside the template declaration
    // this value can be modified but has to remain between 1 and 64
 
    // initiliazing genetic algorithm
-   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,100,50,true,A,B,n,C,m);
+   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,1000,500,true,A,B,n,C,m);
 
    // setting constraints
   // ga.Constraint = MyConstraint;
 
-  //ga.mutrate=0.33;
+  //ga.mutrate=0.9;
   //ga.covrate=0.5;
   //ga.precision=25;
   //ga.Selection=SUS;
-
+    //ga.genstep=1;
 
 
    // running genetic algorithm
@@ -199,13 +199,20 @@ std::vector<double> stress_predicted;
   //  double T_star = 0.53988;
 
 
+double RMS_error=0.0;
 
    for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
 {
 
- stress_predicted.push_back((JC_fitted[0]+(JC_fitted[1]*pow(strain_data[i],JC_fitted[2])))*(1.0+(JC_fitted[3]*std::log(strain_rate_data[i])))*(1.0-pow(Temp_data[i],JC_fitted[4]))) ;
+ double Flow_Stress_JC = (JC_fitted[0]+(JC_fitted[1]*pow(strain_data[i],JC_fitted[2])))*(1.0+(JC_fitted[3]*std::log(strain_rate_data[i])))*(1.0-pow(Temp_data[i],JC_fitted[4]));
+ stress_predicted.push_back(Flow_Stress_JC) ;
 
+    RMS_error +=pow(stress_predicted[i]-stress_data[i],2.0);
 }
+
+RMS_error=sqrt(RMS_error/strain_data.size());
+
+std::cout<<"RMS error on Fit = "<<RMS_error<<std::endl;
 
 //std::cout<<strain_data.size()<<std::endl;
 //std::cout<<stress_data.size()<<std::endl;
