@@ -1,0 +1,50 @@
+# depslib dependency file v1.0
+1679307676 source:/home/tom/Code_Projects/Genetic_Algorithm/main.cpp
+	"./src/Galgo.hpp"
+	<fstream>
+	<string>
+	<sstream>
+
+1550689766 /home/tom/Code_Projects/Genetic_Algorithm/src/Galgo.hpp
+	<algorithm>
+	<bitset>
+	<functional>
+	<iomanip>
+	<iostream>
+	<iterator>
+	<limits>
+	<memory>
+	<numeric>
+	<random>
+	<sstream>
+	<stdexcept>
+	<string>
+	<tuple>
+	<type_traits>
+	<vector>
+	<climits>
+	<cmath>
+	<cstring>
+	<omp.h>
+	"Randomize.hpp"
+	"Converter.hpp"
+	"Parameter.hpp"
+	"Evolution.hpp"
+	"Chromosome.hpp"
+	"Population.hpp"
+	"GeneticAlgorithm.hpp"
+
+1550689766 /home/tom/Code_Projects/Genetic_Algorithm/src/Randomize.hpp
+
+1550689766 /home/tom/Code_Projects/Genetic_Algorithm/src/Converter.hpp
+
+1550689766 /home/tom/Code_Projects/Genetic_Algorithm/src/Parameter.hpp
+
+1550689766 /home/tom/Code_Projects/Genetic_Algorithm/src/Evolution.hpp
+
+1550689766 /home/tom/Code_Projects/Genetic_Algorithm/src/Chromosome.hpp
+
+1550689766 /home/tom/Code_Projects/Genetic_Algorithm/src/Population.hpp
+
+1676910416 /home/tom/Code_Projects/Genetic_Algorithm/src/GeneticAlgorithm.hpp
+

@@ -19,18 +19,23 @@ public:
    {
 
 //read();
+std::vector<double> strain_rate_data;
+std::vector<double> Temp_data;
 std::vector<double> strain_data;
 std::vector<double> stress_data;
+
 
   //std::string line;
   std::ifstream myfile ("Data.dat");
   if (myfile.is_open())
   {
-    double pl_strain,stress;
-    while (myfile >> pl_strain >> stress/* getline (myfile,line) */)
+    double strain_dot,Tstar,pl_strain,stress;
+    while (myfile >> strain_dot >> Tstar >> pl_strain >> stress/* getline (myfile,line) */)
     {
        //std::cout << pl_strain<<std::endl;
-      //std::cout << line << '\n';
+     // std::cout << line << '\n';
+      strain_rate_data.push_back(strain_dot);
+      Temp_data.push_back(Tstar);
       strain_data.push_back(pl_strain);
       stress_data.push_back(stress);
 
@@ -42,8 +47,8 @@ std::vector<double> stress_data;
  // std::cout<<strain_data[9]<<std::endl;
  // std::cout<<stress_data[9]<<std::endl;
 
- double eps_star = 1000.0;//normalised strain rate
- double T_star = 0.53988;
+ //double eps_star = 1000.0;//normalised strain rate
+ //double T_star = 0.53988;
  /*
  double A=0.35000;
  double B=0.56980;
@@ -56,7 +61,7 @@ T obj = 0.0;
 for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
 {
 
-double result_at_strain = (x[0]+(x[1]*pow(strain_data[i],x[2])))*(1.0+(x[3]*std::log(eps_star)))*(1.0-pow(T_star,x[4]));
+double result_at_strain = (x[0]+(x[1]*pow(strain_data[i],x[2])))*(1.0+(x[3]*std::log(strain_rate_data[i])))*(1.0-pow(Temp_data[i],x[4]));
 Result_data.push_back(result_at_strain);
 
 //std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
@@ -74,16 +79,6 @@ obj+=pow(Result_data[i]-stress_data[i],2.0);
    // NB: GALGO maximize by default so we will maximize -f(x,y)
 };
 
-// constraints example:
-// 1) x * y + x - y + 1.5 <= 0
-// 2) 10 - x * y <= 0
-template <typename T>
-std::vector<T> MyConstraint(const std::vector<T>& x)
-{
-   return {x[0]*x[1]+x[0]-x[1]+1.5,10-x[0]*x[1]};
-}
-// NB: a penalty will be applied if one of the constraints is > 0
-// using the default adaptation to constraint(s) method
 
 int main()
 {
@@ -151,7 +146,7 @@ int main()
    // this value can be modified but has to remain between 1 and 64
 
    // initiliazing genetic algorithm
-   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,1000,5000,true,A,B,n,C,m);
+   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,100,50,true,A,B,n,C,m);
 
    // setting constraints
   // ga.Constraint = MyConstraint;
@@ -160,8 +155,8 @@ int main()
   //ga.covrate=0.5;
   //ga.precision=25;
   //ga.Selection=SUS;
-  
-  
+
+
 
    // running genetic algorithm
    ga.run();
@@ -169,19 +164,24 @@ int main()
 
 
    //read();
+std::vector<double> strain_rate_data;
+std::vector<double> Temp_data;
 std::vector<double> strain_data;
 std::vector<double> stress_data;
+
 std::vector<double> stress_predicted;
 
   //std::string line;
   std::ifstream myfile ("Data.dat");
   if (myfile.is_open())
   {
-    double pl_strain,stress;
-    while (myfile >> pl_strain >> stress/* getline (myfile,line) */)
+    double strain_dot,Tstar,pl_strain,stress;
+    while (myfile >> strain_dot >> Tstar >> pl_strain >> stress/* getline (myfile,line) */)
     {
        //std::cout << pl_strain<<std::endl;
       //std::cout << line << '\n';
+      strain_rate_data.push_back(strain_dot);
+      Temp_data.push_back(Tstar);
       strain_data.push_back(pl_strain);
       stress_data.push_back(stress);
 
@@ -195,15 +195,15 @@ std::vector<double> stress_predicted;
    //<<std::endl;
 
 
-    double eps_star = 1000.0;//normalised strain rate
-    double T_star = 0.53988;
+  //  double eps_star = 1000.0;//normalised strain rate
+  //  double T_star = 0.53988;
 
 
 
    for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
 {
 
- stress_predicted.push_back((JC_fitted[0]+(JC_fitted[1]*pow(strain_data[i],JC_fitted[2])))*(1.0+(JC_fitted[3]*std::log(eps_star)))*(1.0-pow(T_star,JC_fitted[4]))) ;
+ stress_predicted.push_back((JC_fitted[0]+(JC_fitted[1]*pow(strain_data[i],JC_fitted[2])))*(1.0+(JC_fitted[3]*std::log(strain_rate_data[i])))*(1.0-pow(Temp_data[i],JC_fitted[4]))) ;
 
 }
 
@@ -214,8 +214,14 @@ std::vector<double> stress_predicted;
   std::ofstream Output_Results;
   Output_Results.open ("Results.txt");
   //Output_Results << "Writing this to a file.\n";
-  
 
+Output_Results<<"Johnson-Cook Parameters for this data are:"<<std::endl;
+Output_Results<<"A: "<<JC_fitted[0]<<std::endl;
+Output_Results<<"B: "<<JC_fitted[1]<<std::endl;
+Output_Results<<"n: "<<JC_fitted[2]<<std::endl;
+Output_Results<<"C: "<<JC_fitted[3]<<std::endl;
+Output_Results<<"m: "<<JC_fitted[4]<<std::endl;
+Output_Results<<"Input Data vs mpredicted data using calibrated JC parameters:"<<std::endl;
 
 Output_Results<<"strain_data[i]"<<"\t"<<"stress_data[i]"<<"\t"<<"stress_predicted[i]"<<std::endl;
 for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
