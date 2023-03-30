@@ -110,6 +110,8 @@ for(int i=0;i<strain_data.size();i++)//assemble result array using strain data a
 {
 
 double result_at_strain = (x[0]+k_h_over_rootl+(x[1]*pow(strain_data[i],x[2])))+(x[3]*std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]))))*Temp_data[i]));
+//std::cout<<"x4: "<<x[4]<<", x5: "<<x[5]<<std::endl;
+//double result_at_strain = std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]))))*Temp_data[i]);
 Result_data.push_back(result_at_strain);
 
 //std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
@@ -178,26 +180,65 @@ obj+=pow(Result_data[i]-stress_data[i],2.0);
 
    }
 
+         static std::vector<T> ObjectiveZA_GENERAL(const std::vector<T>& x)
+   {
+
+//read();
+std::vector<double> strain_rate_data;
+std::vector<double> Temp_data;
+std::vector<double> strain_data;
+std::vector<double> stress_data;
+
+
+  //std::string line;
+  std::ifstream myfile ("Data.dat");
+  if (myfile.is_open())
+  {
+    double strain_dot,Tstar,pl_strain,stress;
+    while (myfile >> strain_dot >> Tstar >> pl_strain >> stress)
+    {
+       //std::cout << pl_strain<<std::endl;
+     // std::cout << line << '\n';
+      strain_rate_data.push_back(strain_dot);
+      Temp_data.push_back(Tstar);
+      strain_data.push_back(pl_strain);
+      stress_data.push_back(stress);
+
+    }
+    myfile.close();
+  }
+  else std::cout << "Unable to open file";
+
+
+  double k_h_over_rootl = 1.0;//????
+
+std::vector<double> Result_data;//[strain_data.size()];
+T obj = 0.0;
+for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
+{
+
+double result_at_strain = (x[0]+k_h_over_rootl+(x[1]*pow(strain_data[i],x[2])))+(x[3]*std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]))))*Temp_data[i]))
+                                                                                +(x[6]*std::sqrt(strain_data[i])*std::exp(-(x[7]-(x[8]*(std::log(strain_rate_data[i]))))*Temp_data[i]));
+Result_data.push_back(result_at_strain);
+
+//std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
+
+obj+=pow(Result_data[i]-stress_data[i],2.0);
+}
+//std::cout<<obj<<std::endl;
+
+//Minimise difference so needs to be -ve
+
+     // T obj = (pow(x[0],2)-(x[0]*x[1]) +x[2]);
+      return {-sqrt(obj/strain_data.size())};
+
+   }
+
 };
 
 
 int main()
 {
-   // initializing parameters lower and upper bounds
-   // an initial value can be added inside the initializer list after the upper bound
-
-    /*
-   //FOR DEBUGGING
-   galgo::Parameter<double> A({0.34999999,0.3500001});//par1({0.0,1.0,1});//last parameter is initial guess
-   galgo::Parameter<double> B({0.56979,0.56981});
-   galgo::Parameter<double> n({0.37879,0.37881});
-   galgo::Parameter<double> C({0.00967,0.00969});
-   galgo::Parameter<double> m({1.26699,1.26701});
-   //FOR DEBUGGING
-*/
-
-
-
 
 
 /* // starting reading in values
@@ -237,34 +278,62 @@ int main()
 
 
 
-   galgo::Parameter<double> A({1.0,5000.0,1020.0});//par1({0.0,1.0,1});//last parameter is initial guess
-   galgo::Parameter<double> B({0.0,5000.0,1530.0});
-   galgo::Parameter<double> n({0.0,1.0,0.4});
-   galgo::Parameter<double> C({0.0,0.1,0.015});
-   galgo::Parameter<double> m({0.0,1.0,0.32});
+  // galgo::Parameter<double> A({1.0,5000.0,1020.0});//par1({0.0,1.0,1});//last parameter is initial guess
+  // galgo::Parameter<double> B({0.0,5000.0,1530.0});
+   //galgo::Parameter<double> n({0.0,1.0,0.4});
+   //galgo::Parameter<double> C({0.0,0.1,0.015});
+  // galgo::Parameter<double> m({0.0,1.0,0.32});
 
    // here both parameter will be encoded using 16 bits the default value inside the template declaration
    // this value can be modified but has to remain between 1 and 64
 
    // initiliazing genetic algorithm
-   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::ObjectiveJC,50,50000,true,A,B,n,C,m);
+  // galgo::GeneticAlgorithm<double> ga(MyObjective<double>::ObjectiveJC,50,50000,true,A,B,n,C,m);
 
    // setting constraints
   // ga.Constraint = MyConstraint;
 
   //ga.mutrate=0.01;
-  ga.covrate=0.5;
+ // ga.covrate=0.5;
   //ga.precision=25;
   //ga.Selection=RSP;
    // ga.Selection=TNT;
     //ga.genstep=1;
-    ga.CrossOver=UXO;
+   // ga.CrossOver=UXO;
 
 
    // running genetic algorithm
-   ga.run();
+  // ga.run();
 
 
+   galgo::Parameter<double> sigma_g({1.0,5000.0});
+   galgo::Parameter<double> K({0.0,5000.0});
+   galgo::Parameter<double> n_ZA({0.0,1.0});
+   galgo::Parameter<double> B_ZA({0.0,0.1});
+   galgo::Parameter<double> beta_0({0.0,1.0});
+   galgo::Parameter<double> beta_1({0.0,0.1});
+
+   galgo::Parameter<double> B_0_ZA({0.0,0.1});
+   galgo::Parameter<double> alpha_0({0.0,1.0});
+   galgo::Parameter<double> alpha_1({0.0,0.1});
+
+    galgo::GeneticAlgorithm<double> ga_ZA_BCC(MyObjective<double>::ObjectiveZA_BCC,50,50000,true,sigma_g,K,n_ZA,B_ZA,beta_0,beta_1);
+    ga_ZA_BCC.genstep=1;
+    ga_ZA_BCC.run();
+
+
+
+//    galgo::GeneticAlgorithm<double> ga_ZA_FCC(MyObjective<double>::ObjectiveZA_FCC,50,50000,true,sigma_g,K,n_ZA,B_0_ZA,alpha_0,alpha_1);
+
+//    ga_ZA_FCC.run();
+
+
+
+ //   galgo::GeneticAlgorithm<double> ga_ZA_General(MyObjective<double>::ObjectiveZA_GENERAL,50,50000,true,sigma_g,K,n_ZA,B_ZA,beta_0,beta_1,B_0_ZA,alpha_0,alpha_1);
+
+ //   ga_ZA_General.run();
+
+ /*
 
    //read();
 std::vector<double> strain_rate_data;
@@ -279,7 +348,7 @@ std::vector<double> stress_predicted;
   if (myfile.is_open())
   {
     double strain_dot,Tstar,pl_strain,stress;
-    while (myfile >> strain_dot >> Tstar >> pl_strain >> stress/* getline (myfile,line) */)
+    while (myfile >> strain_dot >> Tstar >> pl_strain >> stress)
     {
        //std::cout << pl_strain<<std::endl;
       //std::cout << line << '\n';
@@ -341,11 +410,7 @@ std::cout<<strain_data[i]<<"\t"<<stress_data[i]<<"\t"<<stress_predicted[i]<<std:
 }
 
 Output_Results.close();
- //  std::cout<<ytr[0]<<std::endl;
-
- //  std::cout<<ytr.size()<<std::endl;
-
-//std::cout<<ga.result()<<std::endl;
+*/
 
 
 }
