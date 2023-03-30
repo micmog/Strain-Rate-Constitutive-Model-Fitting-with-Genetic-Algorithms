@@ -15,7 +15,7 @@ class MyObjective
 //private:
 public:
 
-   static std::vector<T> Objective(const std::vector<T>& x)
+   static std::vector<T> ObjectiveJC(const std::vector<T>& x)
    {
 
 //read();
@@ -48,20 +48,15 @@ std::vector<double> stress_data;
  // std::cout<<stress_data[9]<<std::endl;
 
  //double eps_star = 1000.0;//normalised strain rate
- //double T_star = 0.53988;
- /*
- double A=0.35000;
- double B=0.56980;
- double n=0.37880;
- double c=0.00968;
- double m=1.26700;
-*/
+ double T_m = 1773.0;
+ double T_0 = 50.0;
+
 std::vector<double> Result_data;//[strain_data.size()];
 T obj = 0.0;
 for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
 {
 
-double result_at_strain = (x[0]+(x[1]*pow(strain_data[i],x[2])))*(1.0+(x[3]*std::log(strain_rate_data[i])))*(1.0-pow(Temp_data[i],x[4]));
+double result_at_strain = (x[0]+(x[1]*pow(strain_data[i],x[2])))*(1.0+(x[3]*std::log(strain_rate_data[i])))*(1.0-pow(((Temp_data[i]-T_0)/(T_m-T_0)),x[4]));
 Result_data.push_back(result_at_strain);
 
 //std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
@@ -76,7 +71,113 @@ obj+=pow(Result_data[i]-stress_data[i],2.0);
       return {-sqrt(obj/strain_data.size())};
 
    }
-   // NB: GALGO maximize by default so we will maximize -f(x,y)
+
+      static std::vector<T> ObjectiveZA_BCC(const std::vector<T>& x)
+   {
+
+//read();
+std::vector<double> strain_rate_data;
+std::vector<double> Temp_data;
+std::vector<double> strain_data;
+std::vector<double> stress_data;
+
+
+  //std::string line;
+  std::ifstream myfile ("Data.dat");
+  if (myfile.is_open())
+  {
+    double strain_dot,Tstar,pl_strain,stress;
+    while (myfile >> strain_dot >> Tstar >> pl_strain >> stress)
+    {
+       //std::cout << pl_strain<<std::endl;
+     // std::cout << line << '\n';
+      strain_rate_data.push_back(strain_dot);
+      Temp_data.push_back(Tstar);
+      strain_data.push_back(pl_strain);
+      stress_data.push_back(stress);
+
+    }
+    myfile.close();
+  }
+  else std::cout << "Unable to open file";
+
+
+  double k_h_over_rootl = 1.0;//????
+
+std::vector<double> Result_data;//[strain_data.size()];
+T obj = 0.0;
+for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
+{
+
+double result_at_strain = (x[0]+k_h_over_rootl+(x[1]*pow(strain_data[i],x[2])))+(x[3]*std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]))))*Temp_data[i]));
+Result_data.push_back(result_at_strain);
+
+//std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
+
+obj+=pow(Result_data[i]-stress_data[i],2.0);
+}
+//std::cout<<obj<<std::endl;
+
+//Minimise difference so needs to be -ve
+
+     // T obj = (pow(x[0],2)-(x[0]*x[1]) +x[2]);
+      return {-sqrt(obj/strain_data.size())};
+
+   }
+
+         static std::vector<T> ObjectiveZA_FCC(const std::vector<T>& x)
+   {
+
+//read();
+std::vector<double> strain_rate_data;
+std::vector<double> Temp_data;
+std::vector<double> strain_data;
+std::vector<double> stress_data;
+
+
+  //std::string line;
+  std::ifstream myfile ("Data.dat");
+  if (myfile.is_open())
+  {
+    double strain_dot,Tstar,pl_strain,stress;
+    while (myfile >> strain_dot >> Tstar >> pl_strain >> stress)
+    {
+       //std::cout << pl_strain<<std::endl;
+     // std::cout << line << '\n';
+      strain_rate_data.push_back(strain_dot);
+      Temp_data.push_back(Tstar);
+      strain_data.push_back(pl_strain);
+      stress_data.push_back(stress);
+
+    }
+    myfile.close();
+  }
+  else std::cout << "Unable to open file";
+
+
+  double k_h_over_rootl = 1.0;//????
+
+std::vector<double> Result_data;//[strain_data.size()];
+T obj = 0.0;
+for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
+{
+
+double result_at_strain = (x[0]+k_h_over_rootl+(x[1]*pow(strain_data[i],x[2])))+(x[3]*std::sqrt(strain_data[i])*std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]))))*Temp_data[i]));
+Result_data.push_back(result_at_strain);
+
+//std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
+
+obj+=pow(Result_data[i]-stress_data[i],2.0);
+}
+//std::cout<<obj<<std::endl;
+
+//Minimise difference so needs to be -ve
+
+     // T obj = (pow(x[0],2)-(x[0]*x[1]) +x[2]);
+      return {-sqrt(obj/strain_data.size())};
+
+   }
+
 };
 
 
@@ -136,17 +237,17 @@ int main()
 
 
 
-   galgo::Parameter<double> A({0.0,5000.0,1020.0});//par1({0.0,1.0,1});//last parameter is initial guess
+   galgo::Parameter<double> A({1.0,5000.0,1020.0});//par1({0.0,1.0,1});//last parameter is initial guess
    galgo::Parameter<double> B({0.0,5000.0,1530.0});
    galgo::Parameter<double> n({0.0,1.0,0.4});
    galgo::Parameter<double> C({0.0,0.1,0.015});
-   galgo::Parameter<double> m({0.319999,0.32000001,0.32});
+   galgo::Parameter<double> m({0.0,1.0,0.32});
 
    // here both parameter will be encoded using 16 bits the default value inside the template declaration
    // this value can be modified but has to remain between 1 and 64
 
    // initiliazing genetic algorithm
-   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::Objective,50,50000,true,A,B,n,C,m);
+   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::ObjectiveJC,50,50000,true,A,B,n,C,m);
 
    // setting constraints
   // ga.Constraint = MyConstraint;
