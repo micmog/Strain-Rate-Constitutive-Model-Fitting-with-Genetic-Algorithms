@@ -292,40 +292,35 @@ int main()
 {
 
 
-/*
 
-const char *fileName="Var.txt";
+
+    const char *fileName="Var.txt";
     std::ifstream paramFile;
     paramFile.open(fileName);
     std::string line;
     std::string key;
     double value;
-std::map <std::string, int> params; // errors
+std::map <std::string, double> params; // errors
 while ( paramFile >> key >> value ) {
     params[key] = value; // input them into the map
 }
-//inFile.close();
-//std::cout<<params["Tm"]<<std::endl;
-//std::map <std::string,double> Params;
 
-*/
+//std::cout<<params["A"]<<std::endl;
+std::cout<<params["Bmax"]<<std::endl;
+
 //exit(0);
 
 
-
-
-
-
-   galgo::Parameter<double> A({1.0,5000.0,1020.0});//par1({0.0,1.0,1});//last parameter is initial guess
-   galgo::Parameter<double> B({0.0,5000.0,1530.0});
-   galgo::Parameter<double> n({0.0,1.0,0.4});
-   galgo::Parameter<double> C({0.0,0.1,0.015});
-   galgo::Parameter<double> m({0.0,1.0,0.32});
+   galgo::Parameter<double> A({params["Amin"],params["Amax"],params["Aguess"]});//par1({0.0,1.0,1});//last parameter is initial guess
+   galgo::Parameter<double> B({params["Bmin"],params["Bmax"],params["Bguess"]});
+   galgo::Parameter<double> n({params["nmin"],params["nmax"],params["nguess"]});
+   galgo::Parameter<double> C({params["Cmin"],params["Cmax"],params["Cguess"]});
+   galgo::Parameter<double> m({params["mmin"],params["mmax"],params["mguess"]});
 
 
 
    // initiliazing genetic algorithm
-   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::ObjectiveJC,50,50000,true,A,B,n,C,m);
+   galgo::GeneticAlgorithm<double> ga(MyObjective<double>::ObjectiveJC,params["Population_Size"],params["N_Generations"],true,A,B,n,C,m);
 
 
 
@@ -342,32 +337,36 @@ while ( paramFile >> key >> value ) {
    ga.run();
 
 
-   galgo::Parameter<double> sigma_g({1.0,5000.0});
-   galgo::Parameter<double> K({0.0,5000.0});
-   galgo::Parameter<double> n_ZA({0.0,1.0});
-   galgo::Parameter<double> B_ZA({0.0,0.1});
-   galgo::Parameter<double> beta_0({0.0,1.0});
-   galgo::Parameter<double> beta_1({0.0,0.1});
+   galgo::Parameter<double> sigma_g({params["sigma_gmin"],params["sigma_gmax"],params["sigma_gguess"]});
+   galgo::Parameter<double> K({params["Kmin"],params["Kmax"],params["Kguess"]});
+   galgo::Parameter<double> n_ZA({params["n_ZAmin"],params["n_ZAmax"],params["n_ZAguess"]});
+   galgo::Parameter<double> B_ZA({params["B_ZAmin"],params["B_ZAmax"],params["B_ZAguess"]});
+   galgo::Parameter<double> beta_0({params["beta_0min"],params["beta_0max"],params["beta_0guess"]});
+   galgo::Parameter<double> beta_1({params["beta_1min"],params["beta_1max"],params["beta_1guess"]});
 
-   galgo::Parameter<double> B_0_ZA({0.0,0.1});
-   galgo::Parameter<double> alpha_0({0.0,1.0});
-   galgo::Parameter<double> alpha_1({0.0,0.1});
-
-//    galgo::GeneticAlgorithm<double> ga_ZA_BCC(MyObjective<double>::ObjectiveZA_BCC,50,50000,true,sigma_g,K,n_ZA,B_ZA,beta_0,beta_1);
-
-//    ga_ZA_BCC.run();
+   galgo::Parameter<double> B_0_ZA({params["B_0_ZAmin"],params["B_0_ZAmax"],params["B_0_ZAguess"]});
+   galgo::Parameter<double> alpha_0({params["alpha_0min"],params["alpha_0max"],params["alpha_0guess"]});
+   galgo::Parameter<double> alpha_1({params["alpha_1min"],params["alpha_1max"],params["alpha_1guess"]});
 
 
 
-//    galgo::GeneticAlgorithm<double> ga_ZA_FCC(MyObjective<double>::ObjectiveZA_FCC,50,50000,true,sigma_g,K,n_ZA,B_0_ZA,alpha_0,alpha_1);
-
-//    ga_ZA_FCC.run();
 
 
+    galgo::GeneticAlgorithm<double> ga_ZA_BCC(MyObjective<double>::ObjectiveZA_BCC,params["Population_Size"],params["N_Generations"],true,sigma_g,K,n_ZA,B_ZA,beta_0,beta_1);
 
-  //  galgo::GeneticAlgorithm<double> ga_ZA_General(MyObjective<double>::ObjectiveZA_GENERAL,50,50000,true,sigma_g,K,n_ZA,B_ZA,beta_0,beta_1,B_0_ZA,alpha_0,alpha_1);
+    ga_ZA_BCC.run();
 
- //   ga_ZA_General.run();
+
+
+    galgo::GeneticAlgorithm<double> ga_ZA_FCC(MyObjective<double>::ObjectiveZA_FCC,params["Population_Size"],params["N_Generations"],true,sigma_g,K,n_ZA,B_0_ZA,alpha_0,alpha_1);
+
+    ga_ZA_FCC.run();
+
+
+
+    galgo::GeneticAlgorithm<double> ga_ZA_General(MyObjective<double>::ObjectiveZA_GENERAL,params["Population_Size"],params["N_Generations"],true,sigma_g,K,n_ZA,B_ZA,beta_0,beta_1,B_0_ZA,alpha_0,alpha_1);
+
+    ga_ZA_General.run();
 
  /*
 

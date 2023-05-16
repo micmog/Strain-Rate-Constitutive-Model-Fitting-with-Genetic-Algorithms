@@ -1,6 +1,82 @@
+JC	1
 e0dot	0.1
 testdisrupt	20000.0
 Tm	1773
 T0	50
-somebullshit number does it break the map?	0.25
+
+
+Amin	1.0
+Amax	5000.0
+Aguess	1020.0
+
+Bmin	0.0
+Bmax	5000.0
+Bguess	1530.0
+
+nmin	0.0
+nmax	1.0
+nguess	0.4
+
+Cmin	0.0
+Cmax	0.1
+Cguess	0.015
+
+mmin	0.0
+mmax	1.0
+mguess	0.32
+
+
+
+
+
+
+
+ZA	2
 k_h_over_rootl	1.0
+GA_Inputs	0.0
+
+sigma_gmin	1.0
+sigma_gmax	5000.0
+sigma_gguess	100.0
+
+Kmin	0.0
+Kmax	5000.0
+Kguess	100.0
+
+n_ZAmin	0.0
+n_ZAmax	1.0
+n_ZAguess	0.5
+
+B_ZAmin	0.0
+B_ZAmax	1.0
+B_ZAguess	0.5
+
+beta_0min	0.0
+beta_0max	1.0
+beta_0guess	0.5
+
+beta_1min	0.0
+beta_1max	0.1
+beta_1guess	0.05
+
+B_0_ZAmin	0.0
+B_0_ZAmax	0.1
+B_0_ZAguess	0.05
+
+alpha_0min	0.0
+alpha_0max	1.0
+alpha_0guess	0.5
+
+alpha_1min	0.0
+alpha_1max	0.1
+alpha_1guess	0.05
+
+
+
+
+
+
+
+
+N_Generations	500
+Population_Size	20
