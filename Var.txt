@@ -1,2 +1,6 @@
-Var1	0.1
-Var2	0.6
+e0dot	0.1
+testdisrupt	20000.0
+Tm	1773
+T0	50
+somebullshit number does it break the map?	0.25
+k_h_over_rootl	1.0

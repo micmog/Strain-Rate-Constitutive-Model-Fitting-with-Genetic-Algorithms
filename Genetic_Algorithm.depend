@@ -1,9 +1,11 @@
 # depslib dependency file v1.0
-1679311161 source:/home/tom/Code_Projects/Genetic_Algorithm/main.cpp
+1684245948 source:/home/tom/Code_Projects/Genetic_Algorithm/main.cpp
 	"./src/Galgo.hpp"
+	<iostream>
 	<fstream>
 	<string>
 	<sstream>
+	<map>
 
 1550689766 /home/tom/Code_Projects/Genetic_Algorithm/src/Galgo.hpp
 	<algorithm>
