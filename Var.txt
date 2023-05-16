@@ -48,7 +48,7 @@ n_ZAmax	1.0
 n_ZAguess	0.5
 
 B_ZAmin	0.0
-B_ZAmax	1.0
+B_ZAmax	100.0
 B_ZAguess	0.5
 
 beta_0min	0.0
@@ -60,7 +60,7 @@ beta_1max	0.1
 beta_1guess	0.05
 
 B_0_ZAmin	0.0
-B_0_ZAmax	0.1
+B_0_ZAmax	100.0
 B_0_ZAguess	0.05
 
 alpha_0min	0.0
@@ -78,5 +78,5 @@ alpha_1guess	0.05
 
 
 
-N_Generations	500
-Population_Size	20
+N_Generations	10000
+Population_Size	12

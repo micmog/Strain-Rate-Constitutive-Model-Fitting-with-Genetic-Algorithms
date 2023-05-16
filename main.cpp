@@ -368,7 +368,7 @@ std::cout<<params["Bmax"]<<std::endl;
 
     ga_ZA_General.run();
 
- /*
+
 
    //read();
 std::vector<double> strain_rate_data;
@@ -376,7 +376,10 @@ std::vector<double> Temp_data;
 std::vector<double> strain_data;
 std::vector<double> stress_data;
 
-std::vector<double> stress_predicted;
+std::vector<double> stress_predicted_JC;
+std::vector<double> stress_predicted_ZA_BCC;
+std::vector<double> stress_predicted_ZA_FCC;
+std::vector<double> stress_predicted_ZA_General;
 
   //std::string line;
   std::ifstream myfile ("Data.dat");
@@ -398,7 +401,13 @@ std::vector<double> stress_predicted;
   else std::cout << "Unable to open file";
 
 
+
+
    std::vector<double> JC_fitted = ga.result()->getParam();
+
+   std::vector<double> ZA_BCC_fitted = ga_ZA_BCC.result()->getParam();
+   std::vector<double> ZA_FCC_fitted = ga_ZA_FCC.result()->getParam();
+   std::vector<double> ZA_General_fitted = ga_ZA_General.result()->getParam();
    //<<std::endl;
 
 
@@ -406,20 +415,46 @@ std::vector<double> stress_predicted;
   //  double T_star = 0.53988;
 
 
-double RMS_error=0.0;
+double RMS_error_JC=0.0;
+double RMS_error_ZABCC=0.0;
+double RMS_error_ZAFCC=0.0;
+double RMS_error_ZACombined=0.0;
 
    for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
 {
 
- double Flow_Stress_JC = (JC_fitted[0]+(JC_fitted[1]*pow(strain_data[i],JC_fitted[2])))*(1.0+(JC_fitted[3]*std::log(strain_rate_data[i])))*(1.0-pow(Temp_data[i],JC_fitted[4]));
- stress_predicted.push_back(Flow_Stress_JC) ;
+ double Flow_Stress_JC = (JC_fitted[0]+(JC_fitted[1]*pow(strain_data[i],JC_fitted[2])))*(1.0+(JC_fitted[3]*std::log(strain_rate_data[i]/params["e0dot"])))*(1.0-pow(((Temp_data[i]-params["T0"])/(params["Tm"]-params["T0"])),JC_fitted[4]));
+ stress_predicted_JC.push_back(Flow_Stress_JC) ;
 
-    RMS_error +=pow(stress_predicted[i]-stress_data[i],2.0);
+ double Flow_Stress_ZA_BCC = (ZA_BCC_fitted[0]+params["k_h_over_rootl"]+(ZA_BCC_fitted[1]*pow(strain_data[i],ZA_BCC_fitted[2])))+(ZA_BCC_fitted[3]*std::exp(-(ZA_BCC_fitted[4]-(ZA_BCC_fitted[5]*(std::log(strain_rate_data[i]/params["e0dot"]))))*Temp_data[i]));
+ stress_predicted_ZA_BCC.push_back(Flow_Stress_ZA_BCC) ;
+
+ double Flow_Stress_ZA_FCC = (ZA_FCC_fitted[0]+params["k_h_over_rootl"]+(ZA_FCC_fitted[1]*pow(strain_data[i],ZA_FCC_fitted[2])))+(ZA_FCC_fitted[3]*std::sqrt(strain_data[i])*std::exp(-(ZA_FCC_fitted[4]-(ZA_FCC_fitted[5]*(std::log(strain_rate_data[i]/params["e0dot"]))))*Temp_data[i]));
+ stress_predicted_ZA_FCC.push_back(Flow_Stress_ZA_FCC) ;
+
+ double Flow_Stress_ZA_General = (ZA_General_fitted[0]+params["k_h_over_rootl"]+(ZA_General_fitted[1]*pow(strain_data[i],ZA_General_fitted[2])))+(ZA_General_fitted[3]*std::exp(-(ZA_General_fitted[4]-(ZA_General_fitted[5]*(std::log(strain_rate_data[i]/params["e0dot"]))))*Temp_data[i]))
+                                        +(ZA_General_fitted[6]*std::sqrt(strain_data[i])*std::exp(-(ZA_General_fitted[7]-(ZA_General_fitted[8]*(std::log(strain_rate_data[i]/params["e0dot"]))))*Temp_data[i]));
+
+
+
+ stress_predicted_ZA_General.push_back(Flow_Stress_ZA_General);
+
+
+RMS_error_JC +=pow(stress_predicted_JC[i]-stress_data[i],2.0);
+RMS_error_ZABCC+=pow(stress_predicted_ZA_BCC[i]-stress_data[i],2.0);
+RMS_error_ZAFCC+=pow(stress_predicted_ZA_FCC[i]-stress_data[i],2.0);
+RMS_error_ZACombined+=pow(stress_predicted_ZA_General[i]-stress_data[i],2.0);
 }
 
-RMS_error=sqrt(RMS_error/strain_data.size());
+RMS_error_JC=sqrt(RMS_error_JC/strain_data.size());
+RMS_error_ZABCC=sqrt(RMS_error_ZABCC/strain_data.size());
+RMS_error_ZAFCC=sqrt(RMS_error_ZAFCC/strain_data.size());
+RMS_error_ZACombined=sqrt(RMS_error_ZACombined/strain_data.size());
 
-std::cout<<"RMS error on Fit = "<<RMS_error<<std::endl;
+std::cout<<"Johnson-Cook RMS error on Fit = "<<RMS_error_JC<<std::endl;
+std::cout<<"Zerilli-Armstrong (BCC) RMS error on Fit = "<<RMS_error_ZABCC<<std::endl;
+std::cout<<"Zerilli-Armstrong (FCC) RMS error on Fit = "<<RMS_error_ZAFCC<<std::endl;
+std::cout<<"Zerilli-Armstrong (Combined) RMS error on Fit = "<<RMS_error_ZACombined<<std::endl;
 
 //std::cout<<strain_data.size()<<std::endl;
 //std::cout<<stress_data.size()<<std::endl;
@@ -435,17 +470,46 @@ Output_Results<<"B: "<<JC_fitted[1]<<std::endl;
 Output_Results<<"n: "<<JC_fitted[2]<<std::endl;
 Output_Results<<"C: "<<JC_fitted[3]<<std::endl;
 Output_Results<<"m: "<<JC_fitted[4]<<std::endl;
+//sigma_g,K,n_ZA,B_ZA,beta_0,beta_1);
+Output_Results<<"Zerilli-Armstrong (BCC) Parameters for this data are:"<<std::endl;
+Output_Results<<"sigma_g: "<<ZA_BCC_fitted[0]<<std::endl;
+Output_Results<<"K: "<<ZA_BCC_fitted[1]<<std::endl;
+Output_Results<<"n_ZA: "<<ZA_BCC_fitted[2]<<std::endl;
+Output_Results<<"B_ZA: "<<ZA_BCC_fitted[3]<<std::endl;
+Output_Results<<"beta_0: "<<ZA_BCC_fitted[4]<<std::endl;
+Output_Results<<"beta_1: "<<ZA_BCC_fitted[5]<<std::endl;
+//sigma_g,K,n_ZA,B_0_ZA,alpha_0,alpha_1
+Output_Results<<"Zerilli-Armstrong (FCC) Parameters for this data are:"<<std::endl;
+Output_Results<<"sigma_g: "<<ZA_BCC_fitted[0]<<std::endl;
+Output_Results<<"K: "<<ZA_BCC_fitted[1]<<std::endl;
+Output_Results<<"n_ZA: "<<ZA_BCC_fitted[2]<<std::endl;
+Output_Results<<"B_0_ZA: "<<ZA_BCC_fitted[3]<<std::endl;
+Output_Results<<"alpha_0: "<<ZA_BCC_fitted[4]<<std::endl;
+Output_Results<<"alpha_1: "<<ZA_BCC_fitted[5]<<std::endl;
+//sigma_g,K,n_ZA,B_ZA,beta_0,beta_1,B_0_ZA,alpha_0,alpha_1
+Output_Results<<"Zerilli-Armstrong (Combined) Parameters for this data are:"<<std::endl;
+Output_Results<<"sigma_g: "<<ZA_General_fitted[0]<<std::endl;
+Output_Results<<"K: "<<ZA_General_fitted[1]<<std::endl;
+Output_Results<<"n_ZA: "<<ZA_General_fitted[2]<<std::endl;
+Output_Results<<"B_ZA: "<<ZA_General_fitted[3]<<std::endl;
+Output_Results<<"beta_0: "<<ZA_General_fitted[4]<<std::endl;
+Output_Results<<"beta_1: "<<ZA_General_fitted[5]<<std::endl;
+Output_Results<<"B_0_ZA: "<<ZA_General_fitted[6]<<std::endl;
+Output_Results<<"alpha_0: "<<ZA_General_fitted[7]<<std::endl;
+Output_Results<<"alpha_1: "<<ZA_General_fitted[8]<<std::endl;
+
+
 Output_Results<<"Input Data vs mpredicted data using calibrated JC parameters:"<<std::endl;
 
-Output_Results<<"strain_data[i]"<<"\t"<<"stress_data[i]"<<"\t"<<"stress_predicted[i]"<<std::endl;
+Output_Results<<"strain_data[i]"<<"\t"<<"stress_data[i]"<<"\t"<<"stress_predicted_JC[i]"<<"\t"<<"stress_predicted_ZA_BCC[i]"<<"\t"<<"stress_predicted_ZA_FCC[i]"<<"\t"<<"stress_predicted_ZA_General[i]"<<std::endl;
 for(int i=0;i<strain_data.size();i++)//assemble result array using strain data and parameters
 {
-Output_Results<<strain_data[i]<<"\t"<<stress_data[i]<<"\t"<<stress_predicted[i]<<std::endl;
-std::cout<<strain_data[i]<<"\t"<<stress_data[i]<<"\t"<<stress_predicted[i]<<std::endl;
+Output_Results<<strain_data[i]<<"\t"<<stress_data[i]<<"\t"<<stress_predicted_JC[i]<<"\t"<<stress_predicted_ZA_BCC[i]<<"\t"<<stress_predicted_ZA_FCC[i]<<"\t"<<stress_predicted_ZA_General[i]<<std::endl;
+//std::cout<<strain_data[i]<<"\t"<<stress_data[i]<<"\t"<<stress_predicted_JC[i]<<std::endl;
 }
 
 Output_Results.close();
-*/
+
 
 
 }
