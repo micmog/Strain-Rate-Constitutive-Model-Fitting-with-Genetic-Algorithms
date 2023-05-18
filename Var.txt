@@ -1,8 +1,8 @@
 JC	1
 e0dot	0.1
 testdisrupt	20000.0
-Tm	1773
-T0	50
+Tm	1933.0
+T0	293
 
 
 Amin	1.0
@@ -35,7 +35,7 @@ ZA	2
 k_h_over_rootl	1.0
 GA_Inputs	0.0
 
-sigma_gmin	1.0
+sigma_gmin	0.0
 sigma_gmax	5000.0
 sigma_gguess	100.0
 
@@ -52,24 +52,24 @@ B_ZAmax	100.0
 B_ZAguess	0.5
 
 beta_0min	0.0
-beta_0max	1.0
-beta_0guess	0.5
+beta_0max	0.5
+beta_0guess	0.25
 
 beta_1min	0.0
-beta_1max	0.1
-beta_1guess	0.05
+beta_1max	0.01
+beta_1guess	0.005
 
 B_0_ZAmin	0.0
 B_0_ZAmax	100.0
 B_0_ZAguess	0.05
 
 alpha_0min	0.0
-alpha_0max	1.0
-alpha_0guess	0.5
+alpha_0max	0.5
+alpha_0guess	0.05
 
 alpha_1min	0.0
-alpha_1max	0.1
-alpha_1guess	0.05
+alpha_1max	0.01
+alpha_1guess	0.005
 
 
 

@@ -141,7 +141,9 @@ for(int i=0;i<strain_data.size();i++)//assemble result array using strain data a
 
 double result_at_strain = (x[0]+params["k_h_over_rootl"]+(x[1]*pow(strain_data[i],x[2])))+(x[3]*std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]/params["e0dot"]))))*Temp_data[i]));
 //std::cout<<"x4: "<<x[4]<<", x5: "<<x[5]<<std::endl;
-//double result_at_strain = std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]))))*Temp_data[i]);
+
+//std::cout<<"BCC_RESULT: "<<result_at_strain<<std::endl;
+
 Result_data.push_back(result_at_strain);
 
 //std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
