@@ -78,5 +78,5 @@ alpha_1guess	0.005
 
 
 
-N_Generations	10000
-Population_Size	12
+N_Generations	100
+Population_Size	50000

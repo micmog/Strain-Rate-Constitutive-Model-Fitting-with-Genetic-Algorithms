@@ -141,9 +141,7 @@ for(int i=0;i<strain_data.size();i++)//assemble result array using strain data a
 
 double result_at_strain = (x[0]+params["k_h_over_rootl"]+(x[1]*pow(strain_data[i],x[2])))+(x[3]*std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]/params["e0dot"]))))*Temp_data[i]));
 //std::cout<<"x4: "<<x[4]<<", x5: "<<x[5]<<std::endl;
-
-//std::cout<<"BCC_RESULT: "<<result_at_strain<<std::endl;
-
+//double result_at_strain = std::exp(-(x[4]-(x[5]*(std::log(strain_rate_data[i]))))*Temp_data[i]);
 Result_data.push_back(result_at_strain);
 
 //std::cout<<i<<"\t"<<strain_data[i]<<"\t"<<Result_data[i]<<std::endl;
@@ -308,7 +306,7 @@ while ( paramFile >> key >> value ) {
 }
 
 //std::cout<<params["A"]<<std::endl;
-std::cout<<params["Bmax"]<<std::endl;
+// std::cout<<params["Bmax"]<<std::endl;
 
 //exit(0);
 
@@ -326,16 +324,19 @@ std::cout<<params["Bmax"]<<std::endl;
 
 
 
-  //ga.mutrate=0.01;
- // ga.covrate=0.5;
+  // ga.mutrate=0.25;
+  // ga.covrate=0.75;
   //ga.precision=25;
-  //ga.Selection=RSP;
-   // ga.Selection=TNT;
-    //ga.genstep=1;
-   // ga.CrossOver=UXO;
+  ga.Selection=TNT;
+    // ga.tntsize=1000;
+    ga.genstep=1;
+    // ga.Selection=SUS;
+    // ga.Mutation=UNM;
+    // ga.CrossOver=P2XO;
 
 
    // running genetic algorithm
+   std::cout<<"Fitting Johnson-Cook"<<std::endl;
    ga.run();
 
 
@@ -356,18 +357,37 @@ std::cout<<params["Bmax"]<<std::endl;
 
     galgo::GeneticAlgorithm<double> ga_ZA_BCC(MyObjective<double>::ObjectiveZA_BCC,params["Population_Size"],params["N_Generations"],true,sigma_g,K,n_ZA,B_ZA,beta_0,beta_1);
 
+// ga_ZA_BCC.mutrate=0.25;
+  //ga_ZA_BCC.covrate=0.75;
+ga_ZA_BCC.Selection=TNT;
+ga_ZA_BCC.genstep=1;
+//     ga_ZA_BCC.CrossOver=UXO;
+std::cout<<"Fitting Zerilli-Armstrong (BCC)"<<std::endl;
     ga_ZA_BCC.run();
 
 
 
     galgo::GeneticAlgorithm<double> ga_ZA_FCC(MyObjective<double>::ObjectiveZA_FCC,params["Population_Size"],params["N_Generations"],true,sigma_g,K,n_ZA,B_0_ZA,alpha_0,alpha_1);
 
+// ga_ZA_FCC.mutrate=0.25;
+  //ga_ZA_FCC.covrate=0.75;
+ga_ZA_FCC.Selection=TNT;
+ga_ZA_FCC.genstep=1;
+//     ga_ZA_FCC.CrossOver=UXO;
+std::cout<<"Fitting Zerilli-Armstrong (FCC)"<<std::endl;
     ga_ZA_FCC.run();
 
 
 
     galgo::GeneticAlgorithm<double> ga_ZA_General(MyObjective<double>::ObjectiveZA_GENERAL,params["Population_Size"],params["N_Generations"],true,sigma_g,K,n_ZA,B_ZA,beta_0,beta_1,B_0_ZA,alpha_0,alpha_1);
 
+ga_ZA_General.Selection=TNT;
+ga_ZA_General.genstep=1;
+//     ga_ZA_General.CrossOver=UXO;
+
+// ga_ZA_General.mutrate=0.25;
+  //ga_ZA_General.covrate=0.75;
+  std::cout<<"Fitting Zerilli-Armstrong (General)"<<std::endl;
     ga_ZA_General.run();
 
 
