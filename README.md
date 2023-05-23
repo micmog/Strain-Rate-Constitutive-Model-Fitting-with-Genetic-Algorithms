@@ -41,6 +41,10 @@ Currently the code can be used to fit the Johnson-Cook, Zerilli-Armstrong (BCC),
 
 
 
+```
+![alt text](https://github.com/micmog/GA_JC/images/GAfit_steel.png?raw=true)
+```
+
 ## Compilation
 
 The main.cpp file can be compiled on the command line using the following command:
