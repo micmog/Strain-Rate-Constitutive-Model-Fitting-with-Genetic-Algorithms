@@ -41,9 +41,11 @@ Currently the code can be used to fit the Johnson-Cook, Zerilli-Armstrong (BCC),
 
 
 
-```
-![alt text](https://github.com/micmog/GA_JC/images/GAfit_steel.png?raw=true)
-```
+
+![GAfit_steel](https://github.com/micmog/GA_JC/assets/17575203/de81000e-9846-48e2-8201-6b777f61e766?raw=true)
+
+
+
 
 ## Compilation
 
