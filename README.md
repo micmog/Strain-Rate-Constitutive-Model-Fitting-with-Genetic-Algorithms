@@ -4,13 +4,13 @@ Genetic Algorithm Fitting of Strain Rate Dependent Constitutive Models
 
 ## Description
 
-The code presented in this repository is used to fit constitutive models to experimental data. The code uses the Galgo-2 library; additinal information on the workings of the genetic-algorithm components of this repository may be found here (
+The code presented in this repository is used to fit constitutive models to experimental data. The code uses the Galgo-2 library; additinal information on the workings of the genetic-algorithm components of this repository may be found here:
 
-[Here]: https://github.com/olmallet81/GALGO-2.0	"GALGO-2"
+[GALGO-2](https://github.com/olmallet81/GALGO-2.0)
 
-). The code takes data as a 4-column array in the Data.dat file; the format is: $\dot{\varepsilon_{eff}^{p}}$ `tab` $T$ `tab` $\varepsilon_{eff}^{p}$ `tab` $\sigma_{y}$
+The code takes data as a 4-column array in the Data.dat file; the format is: $\dot{\varepsilon_{eff}^{p}}$ `tab` $T$ `tab` $\varepsilon_{eff}^{p}$ `tab` $\sigma_{y}$. The code can be used with data of any strain rate and temperature, or combination thereof.
 
-The code also reads various model parameters and bounds for the constitutive models from the Var.txt file
+The code also reads the various model parameters and bounds for the constitutive models from the Var.txt file
 
 Currently the code can be used to fit the Johnson-Cook, Zerilli-Armstrong (BCC), Zerilli-Armstrong (FCC), and the Combined Zerilli-Armstrong (FCC and BCC) models. 
 
@@ -69,7 +69,8 @@ The code expects the following variables to be present in the Var.txt file in or
 | N_Generations   | Number of Generations to run the Genetic Algorithm over      |....|
 | Population_Size | Number of Chromosones, or population, for the Genetic Algorithm to utilise |....|
 
-#### Example RMS Error Trend for the Various Constitutive Models Fitted by the Genetic Algorithm
+
+The code will fit the 4 constitutive models to the data provided. Following completion the user will be provided with a series of optimised fitting parameters that minimised the RMS error between the relative constitutive models and supplied data. Below shows how the RMS error evolves as a function of generation number:
 
 ![Example Output](https://github.com/micmog/GA_JC/blob/main/images/GAfit_steel.png?raw=true)
 
