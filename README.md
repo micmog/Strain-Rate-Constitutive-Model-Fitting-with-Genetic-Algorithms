@@ -39,10 +39,7 @@ Currently the code can be used to fit the Johnson-Cook, Zerilli-Armstrong (BCC),
 | N_Generations   | Number of Generations to run the Genetic Algorithm over      |
 | Population_Size | Number of Chromosones, or population, for the Genetic Algorithm to utilise |
 
-
-
-
-![GAfit_steel](https://github.com/micmog/GA_JC/assets/17575203/de81000e-9846-48e2-8201-6b777f61e766?raw=true)
+![Example Output](https://github.com/micmog/GA_JC/blob/main/images/GAfit_steel.png?raw=true)
 
 
 
