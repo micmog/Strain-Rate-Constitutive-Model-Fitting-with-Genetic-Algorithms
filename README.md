@@ -28,7 +28,7 @@ $\sigma_{y}=\sigma_{a}+Be^{-\beta T}+B_{0}\sqrt{\varepsilon_{eff}^{p}}e^{-\alpha
 Where the athermal part of the flow stress is defined as:
 $\sigma_{a}=\sigma_{g}+\frac{k_{h}}{\sqrt{l}}+K\varepsilon_{p}^{n}$
 
-Where $frac{k_{h}}{\sqrt{l}}$ is the Hall-Petch strengthening limit. The exponents $\alpha$ and $\beta$ are defined as:
+Where $\frac{k_{h}}{\sqrt{l}}$ is the Hall-Petch strengthening limit. The exponents $\alpha$ and $\beta$ are defined as:
 
 $\alpha=\alpha_{0}-\alpha_{1}\ln\left(\frac{\dot{\varepsilon_{eff}^{p}}}{\dot{\varepsilon_{0}}}\right)$
 $\beta=\beta_{0}-\beta_{1}\ln\left(\frac{\dot{\varepsilon_{eff}^{p}}}{\dot{\varepsilon_{0}}}\right)$
@@ -46,28 +46,28 @@ The code will fit to the FCC, BCC and total combined Zerilli-Armstrong models.
 
 The code expects the following variables to be present in the Var.txt file in order to fit the various constitutive models:
 
-| Variable Name   | Description                                                  |
-| --------------- | ------------------------------------------------------------ |
-| e0dot           | Reference Strain Rate                                        |
-| Tm              | Melting Temperature (Johnson-Cook)                           |
-| T0              | Reference Temperature                                        |
-| A               | Initial yield strength                                       |
-| B               | Hardening parameter                                                |
-| n               |  	Hardening parameter                                          |
-| C               |    	Strain rate hardening parameter                                                           |
-| m               |    Thermal softening parameter                                                          |
-| k_h_over_rootl  | Combines Microstructural stress intensity and average grain diameter ($k_{h}/sqrt{l}$)                                |
-| sigma_g         |  Athermal flow stress                                                            |
-| K               |   	Crystal structure dependent parameter                                                            |
-| n_ZA            |   	Strain hardening parameter                                                            |
-| B_ZA            |       	Strain rate hardening/thermal softening parameter                                                      |
-| Beta_0          |    	Thermal softening parameter                                                          |
-| Beta_1          |      	Strain rate hardening/thermal softening parameter                                                         |
-| B_0             |     	Strain rate hardening/thermal softening parameter                                                         |
-| Alpha_0         |  	Thermal softening parameter                                                             |
-| Alpha_1         |   	Strain rate hardening/thermal softening parameter                                                            |
-| N_Generations   | Number of Generations to run the Genetic Algorithm over      |
-| Population_Size | Number of Chromosones, or population, for the Genetic Algorithm to utilise |
+| Variable Name   | Description                                                  | Symbol in Above Equations|
+| --------------- | ------------------------------------------------------------ |---------------------------|
+| e0dot           | Reference Strain Rate                                        |$\dot{\varepsilon_{0}}$|
+| Tm              | Melting Temperature (Johnson-Cook)                           |$T_m$|
+| T0              | Reference Temperature                                        |$T_0$|
+| A               | Initial yield strength (Johnson-Cook)                                       |$A$|
+| B               | Hardening parameter  (Johnson-Cook)                                         |$B$|
+| n               |  	Hardening parameter(Johnson-Cook)                                       |$n$|
+| C               |    	Strain rate hardening parameter  (Johnson-Cook)                         |$C$|
+| m               |    Thermal softening parameter  (Johnson-Cook)                              |$m$|
+| k_h_over_rootl  | Combines Microstructural stress intensity and average grain diameter ($\frac{k_{h}}{\sqrt{l}}$) |$\frac{k_{h}}{\sqrt{l}}$|
+| sigma_g         |  Athermal flow stress (Zerilli-Armstrong)                                                           |$\sigma_{g}$|
+| K               |   	Crystal structure dependent parameter (Zerilli-Armstrong)                                                           |$K$|
+| n_ZA            |   	Strain hardening parameter (Zerilli-Armstrong)                                                           |$n$|
+| B_ZA            |       	Strain rate hardening/thermal softening parameter (Zerilli-Armstrong)                                                     |$B$|
+| Beta_0          |    	Thermal softening parameter (Zerilli-Armstrong)                                                         |$\beta_{0}$|
+| Beta_1          |      	Strain rate hardening/thermal softening parameter (Zerilli-Armstrong)                                                        |$\beta_{1}$|
+| B_0             |     	Strain rate hardening/thermal softening parameter (Zerilli-Armstrong)                                                        |$B_{0}$|
+| Alpha_0         |  	Thermal softening parameter (Zerilli-Armstrong)                                                            |$\alpha_{0}$|
+| Alpha_1         |   	Strain rate hardening/thermal softening parameter  (Zerilli-Armstrong)                                                          |$\alpha_{1}$|
+| N_Generations   | Number of Generations to run the Genetic Algorithm over      |....|
+| Population_Size | Number of Chromosones, or population, for the Genetic Algorithm to utilise |....|
 
 #### Example RMS Error Trend for the Various Constitutive Models Fitted by the Genetic Algorithm
 
