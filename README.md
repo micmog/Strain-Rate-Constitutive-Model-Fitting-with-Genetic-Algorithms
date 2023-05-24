@@ -39,6 +39,8 @@ Currently the code can be used to fit the Johnson-Cook, Zerilli-Armstrong (BCC),
 | N_Generations   | Number of Generations to run the Genetic Algorithm over      |
 | Population_Size | Number of Chromosones, or population, for the Genetic Algorithm to utilise |
 
+#### Example RMS Error Trend for the Various Constitutive Models Fitted by the Genetic Algorithm
+
 ![Example Output](https://github.com/micmog/GA_JC/blob/main/images/GAfit_steel.png?raw=true)
 
 
