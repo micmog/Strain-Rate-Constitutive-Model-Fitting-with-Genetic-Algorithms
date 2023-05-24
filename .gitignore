@@ -1,0 +1,7 @@
+# editor and misc backup files - anywhere
+bin
+*.cbp
+*.depend
+obj
+run
+*.layout
