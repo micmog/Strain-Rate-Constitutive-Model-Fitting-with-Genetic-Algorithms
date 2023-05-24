@@ -14,28 +14,38 @@ The code also reads various model parameters and bounds for the constitutive mod
 
 Currently the code can be used to fit the Johnson-Cook, Zerilli-Armstrong (BCC), Zerilli-Armstrong (FCC), and the Combined Zerilli-Armstrong (FCC and BCC) models. 
 
+## Johnson-Cook Constitutive Model
+
+Johnson-Cook's constitutive model. The von Mises flow stress is defined as:
+
+$\sigma_{y}=\left(A+B\left(\varepsilon_{eff}^{p}\right)^{n}\right)\left(1+C\,\ln\left(\frac{\dot{\varepsilon_{eff}^{p}}}{\dot{\varepsilon_{0}}}\right)\right)\left(1-\left(\frac{T-T_{0}}{T_{m}-T_{0}}\right)^{m}\right)$
+
+## Zerilli-Armstrong Constitutive Model
+
 ### Var.txt Inputs
+
+The code expects the following variables to be present in the Var.txt file in order to fit the various constitutive models:
 
 | Variable Name   | Description                                                  |
 | --------------- | ------------------------------------------------------------ |
 | e0dot           | Reference Strain Rate                                        |
 | Tm              | Melting Temperature (Johnson-Cook)                           |
 | T0              | Reference Temperature                                        |
-| A               |                                                              |
-| B               |                                                              |
-| n               |                                                              |
-| C               |                                                              |
-| m               |                                                              |
-| k_h_over_rootl  | Zerilli-Armstrong parameter                                  |
-| sigma_g         |                                                              |
-| K               |                                                              |
-| n_ZA            |                                                              |
-| B_ZA            |                                                              |
-| Beta_0          |                                                              |
-| Beta_1          |                                                              |
-| B_0             |                                                              |
-| Alpha_0         |                                                              |
-| Alpha_1         |                                                              |
+| A               | Initial yield strength                                       |
+| B               | Hardening parameter                                                |
+| n               |  	Hardening parameter                                          |
+| C               |    	Strain rate hardening parameter                                                           |
+| m               |    Thermal softening parameter                                                          |
+| k_h_over_rootl  | Combines Microstructural stress intensity and average grain diameter ($k_{h}/sqrt{l}$)                                |
+| sigma_g         |  Athermal flow stress                                                            |
+| K               |   	Crystal structure dependent parameter                                                            |
+| n_ZA            |   	Strain hardening parameter                                                            |
+| B_ZA            |       	Strain rate hardening/thermal softening parameter                                                      |
+| Beta_0          |    	Thermal softening parameter                                                          |
+| Beta_1          |      	Strain rate hardening/thermal softening parameter                                                         |
+| B_0             |     	Strain rate hardening/thermal softening parameter                                                         |
+| Alpha_0         |  	Thermal softening parameter                                                             |
+| Alpha_1         |   	Strain rate hardening/thermal softening parameter                                                            |
 | N_Generations   | Number of Generations to run the Genetic Algorithm over      |
 | Population_Size | Number of Chromosones, or population, for the Genetic Algorithm to utilise |
 
