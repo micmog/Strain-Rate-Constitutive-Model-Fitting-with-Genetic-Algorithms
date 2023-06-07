@@ -502,12 +502,12 @@ Output_Results<<"beta_0: "<<ZA_BCC_fitted[4]<<std::endl;
 Output_Results<<"beta_1: "<<ZA_BCC_fitted[5]<<std::endl;
 //sigma_g,K,n_ZA,B_0_ZA,alpha_0,alpha_1
 Output_Results<<"Zerilli-Armstrong (FCC) Parameters for this data are:"<<std::endl;
-Output_Results<<"sigma_g: "<<ZA_BCC_fitted[0]<<std::endl;
-Output_Results<<"K: "<<ZA_BCC_fitted[1]<<std::endl;
-Output_Results<<"n_ZA: "<<ZA_BCC_fitted[2]<<std::endl;
-Output_Results<<"B_0_ZA: "<<ZA_BCC_fitted[3]<<std::endl;
-Output_Results<<"alpha_0: "<<ZA_BCC_fitted[4]<<std::endl;
-Output_Results<<"alpha_1: "<<ZA_BCC_fitted[5]<<std::endl;
+Output_Results<<"sigma_g: "<<ZA_FCC_fitted[0]<<std::endl;
+Output_Results<<"K: "<<ZA_FCC_fitted[1]<<std::endl;
+Output_Results<<"n_ZA: "<<ZA_FCC_fitted[2]<<std::endl;
+Output_Results<<"B_0_ZA: "<<ZA_FCC_fitted[3]<<std::endl;
+Output_Results<<"alpha_0: "<<ZA_FCC_fitted[4]<<std::endl;
+Output_Results<<"alpha_1: "<<ZA_FCC_fitted[5]<<std::endl;
 //sigma_g,K,n_ZA,B_ZA,beta_0,beta_1,B_0_ZA,alpha_0,alpha_1
 Output_Results<<"Zerilli-Armstrong (Combined) Parameters for this data are:"<<std::endl;
 Output_Results<<"sigma_g: "<<ZA_General_fitted[0]<<std::endl;
